@@ -19,6 +19,7 @@ class CreateTablePaymentTransaction extends Migration
             $table->string('order_id');
             $table->decimal('amount',19,2);
             $table->enum('category',['deposit','withdraw']);
+            $table->enum('status',['success','failed']);
             $table->timestamps();
 
             $table->foreign('cust_id')->references('id')->on('payment_customer')->onDelete('cascade');
