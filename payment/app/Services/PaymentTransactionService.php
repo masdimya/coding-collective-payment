@@ -29,6 +29,16 @@ class PaymentTransactionService
     $this->createTransaction($custId, $amount, 'withdraw', $orderId, 'failed');
   }
 
+  public function depositTranscationSuccess($custId, $amount, $orderId)
+  {
+    $this->createTransaction($custId, $amount, 'deposit', $orderId);
+  }
+
+  public function depositTranscationFailed($custId, $amount, $orderId)
+  {
+    $this->createTransaction($custId, $amount, 'deposit', $orderId, 'failed');
+  }
+
   public function withdraw($custId, $amount)
   {
     $balance = PaymentBalanceModel::where('cust_id', $custId )->first();
