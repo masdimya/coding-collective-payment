@@ -50,10 +50,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {   
-        if ($request->acceptsJson()) {
+        if($exception instanceof PaymentHttpException){
             return response()->json([
-                'error' => 'Internal Server Error',
-            ], 500);
+                'order_id' => $exception->getOrderId(),
+                'amount'   => $exception->getAmount(),
+                'status'   => $exception->getStatus(),
+            ],500);
         }
 
         return parent::render($request, $exception);
