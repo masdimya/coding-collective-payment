@@ -2,41 +2,45 @@
 
 namespace App\Services;
 
+use App\Models\PaymentBalanceModel;
 use App\Models\PaymentTransactionModel;
-
-
+use Error;
 
 class PaymentTransactionService
 {
-  protected function makeTransaction($custId, $amount, $category, $orderId)
+  public function createTransaction($custId, $amount, $category, $orderId, $status='success')
   {
     PaymentTransactionModel::create([
       'cust_id'  => $custId,
       'amount'   => $amount,
       'category' => $category,
       'order_id' => $orderId,
+      'status'   => $status,
     ]);
 
-    $this->updateBalance();
-    $this->notify();
 
   }
 
-  public function withdraw($custId, $amount, $orderId)
+  public function withdraw($custId, $amount)
   {
-    $this->makeTransaction($custId, $amount, 'witdraw', $orderId);
+    $balance = PaymentBalanceModel::where('cust_id', $custId )->first();
+    if($balance->balance < $amount){
+      throw New Error('error');
+    } 
+
+    $balance->balance -= $amount;
+    $balance->save();
   }
 
-  public function deposit($custId, $amount, $orderId)
+  public function deposit($custId, $amount)
   {
-    $this->makeTransaction($custId, $amount, 'deposit', $orderId);
+    $balance = PaymentBalanceModel::where('cust_id', $custId )->first();
+    $balance->balance += $amount;
+    $balance->save();
   }
 
   public function notify(){
-
+    return 'notify';
   }
 
-  public function updateBalance(){
-
-  }
 }

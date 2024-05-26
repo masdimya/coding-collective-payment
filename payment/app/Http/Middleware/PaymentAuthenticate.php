@@ -19,19 +19,30 @@ class PaymentAuthenticate
         $authorizationHeader = $request->header('Authorization');
 
         if (!$authorizationHeader || !str_starts_with($authorizationHeader, 'Bearer ')) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return $this->unauthorizedResponse();
         }
 
         $token = str_replace('Bearer ','',$authorizationHeader);
         $tokenDecode =  base64_decode($token); 
 
         if($tokenDecode != env('PAYMENT_PLAINTEXT_TOKEN')){
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return $this->unauthorizedResponse();
+
         }
 
-        $customer = PaymentCustomerModel::findOne(['name' => $tokenDecode ]);
+        $customer = PaymentCustomerModel::where('name', $tokenDecode)->first();
+
+
+        if($tokenDecode != env('PAYMENT_PLAINTEXT_TOKEN') || !$customer){
+            return $this->unauthorizedResponse();
+        }
+
         $request->attributes->set('customer', $customer);
 
         return $next($request);
+    }
+
+    public function unauthorizedResponse(){
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 }
