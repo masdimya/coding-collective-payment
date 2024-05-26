@@ -12,6 +12,19 @@ class TransactionController extends Controller
         $this->paymentService = new PaymentTransactionService();
     }
     public function withdrawBalance(Request $request){
+        $customer = $request->attributes->get('customer');
+        $amount   = $request->amount;
+        $orderId  = $request->order_id;
+        $category = 'withdraw';
+
+        $this->paymentService->withdraw($customer->id, $amount);
+        $this->paymentService->createTransaction(
+            $customer->id,
+            $amount,
+            $category,
+            $orderId,
+        );
+
     }
 
     public function depositBalance(Request $request){
