@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Exceptions\PaymentException;
 use App\Models\PaymentBalanceModel;
 use App\Models\PaymentTransactionModel;
-use Error;
 
 class PaymentTransactionService
 {
@@ -25,7 +25,7 @@ class PaymentTransactionService
   {
     $balance = PaymentBalanceModel::where('cust_id', $custId )->first();
     if($balance->balance < $amount){
-      throw New Error('error');
+      throw PaymentException::insufficientBalance();
     } 
 
     $balance->balance -= $amount;
