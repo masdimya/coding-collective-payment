@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PaymentHttpException;
+use App\Jobs\ProcessWithdraw;
 use App\Services\PaymentTransactionService;
 use Illuminate\Http\Request;
 
@@ -12,19 +14,23 @@ class TransactionController extends Controller
         $this->paymentService = new PaymentTransactionService();
     }
     public function withdrawBalance(Request $request){
-        $customer = $request->attributes->get('customer');
-        $amount   = $request->amount;
-        $orderId  = $request->order_id;
-        $category = 'withdraw';
+        try {
+            $customer = $request->attributes->get('customer');
+            $amount   = $request->amount;
+            $orderId  = $request->order_id;
 
-        $this->paymentService->withdraw($customer->id, $amount);
-        $this->paymentService->createTransaction(
-            $customer->id,
-            $amount,
-            $category,
-            $orderId,
-        );
+            ProcessWithdraw::dispatch($customer->id, $amount, $orderId );
 
+            return response()->json([
+                'order_id' => $orderId,
+                'amount'   => $amount,
+                'status'   => 1,
+            ]);
+            
+        } catch (\Throwable $th) {
+            throw new PaymentHttpException($th, $orderId, $amount);
+        }
+        
     }
 
     public function depositBalance(Request $request){

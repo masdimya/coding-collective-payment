@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Exceptions\PaymentException;
+use App\Exceptions\PaymentJobsException;
 use App\Models\PaymentBalanceModel;
 use App\Models\PaymentTransactionModel;
 
@@ -17,15 +17,23 @@ class PaymentTransactionService
       'order_id' => $orderId,
       'status'   => $status,
     ]);
+  }
 
+  public function withdrawTranscationSuccess($custId, $amount, $orderId)
+  {
+    $this->createTransaction($custId, $amount, 'withdraw', $orderId);
+  }
 
+  public function withdrawTranscationFailed($custId, $amount, $orderId)
+  {
+    $this->createTransaction($custId, $amount, 'withdraw', $orderId, 'failed');
   }
 
   public function withdraw($custId, $amount)
   {
     $balance = PaymentBalanceModel::where('cust_id', $custId )->first();
     if($balance->balance < $amount){
-      throw PaymentException::insufficientBalance();
+      throw PaymentJobsException::insufficientBalance();
     } 
 
     $balance->balance -= $amount;
