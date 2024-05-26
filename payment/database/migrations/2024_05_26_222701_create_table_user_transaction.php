@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableUserBalance extends Migration
+class CreateTableUserTransaction extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,15 @@ class CreateTableUserBalance extends Migration
      */
     public function up()
     {
-        Schema::create('user_balance', function (Blueprint $table) {
+        Schema::create('user_transaction', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->unique();
-            $table->decimal('balance',19,2);
+            $table->string('order_id');
+            $table->decimal('amount',19,2);
+            $table->enum('category',['deposit','withdraw']);
+            $table->enum('status',['process','success', 'failed' ]);
             $table->timestamps();
+
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
         });
     }
@@ -29,6 +33,6 @@ class CreateTableUserBalance extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_balance');
+        Schema::dropIfExists('user_transaction');
     }
 }
