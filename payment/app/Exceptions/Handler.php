@@ -49,7 +49,13 @@ class Handler extends ExceptionHandler
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
-    {
+    {   
+        if ($request->acceptsJson()) {
+            return response()->json([
+                'error' => 'Internal Server Error',
+            ], 500);
+        }
+
         return parent::render($request, $exception);
     }
 }
