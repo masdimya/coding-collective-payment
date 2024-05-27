@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('page');
 });
+
+Route::get('/hook-transaction', 'UserController@hookTransaction');

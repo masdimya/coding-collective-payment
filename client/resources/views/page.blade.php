@@ -9,6 +9,7 @@
   @livewireStyles
 </head>
 <body class="mx-20">
+  @livewire('broadcast')
   <div class="container">
     @livewire('balance')
     @livewire('form')

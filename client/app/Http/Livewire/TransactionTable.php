@@ -9,13 +9,20 @@ class TransactionTable extends Component
 {
     protected $userService;
     public $transactions;
+    protected $listeners = ['updateTransaction' => 'getTransactions'];
+
 
     public function __construct() {
         $this->userService = new UserServices();
+        $this->getTransactions();
     }
+
     public function render()
     {
-        $this->transactions = $this->userService->getTransactions();
         return view('livewire.transaction-table');
+    }
+
+    public function getTransactions(){
+        $this->transactions = $this->userService->getTransactions();
     }
 }
