@@ -34,13 +34,6 @@ class UserServices
     return $this->generateOrderId('DEPO');
   }
 
-  public function updateWithdrawBalance(){
-
-  }
-
-  public function updateDepostiBalance(){
-
-  }
 
   protected function createTransaction($userId, $orderId, $amount, $category, $status = 'process'){
     
@@ -54,8 +47,20 @@ class UserServices
     ]);
   }
 
-  protected function updateTransaction(){
+  public function updateTransaction($orderId, $status){
+    $transaction = UserTransaction::where('order_id',$orderId)->first();
 
+    switch ($status) {
+      case 'success':
+        $transaction->status = 'success';
+        break;
+      case 'failed':
+      default:
+        $transaction->status = 'failed';
+        break;
+    }
+
+    $transaction->save();
   }
 
   public function createWithdrawProcess($userId, $orderId, $amount){
@@ -66,12 +71,38 @@ class UserServices
     $this->createTransaction($userId, $orderId, $amount, 'deposit');
   }
 
-  public function updateWithdrawProcess(){
-    $this->updateTransaction();
+  public function updateBalance($orderId, $walletBalance){
+    $transaction = UserTransaction::where('order_id',$orderId)->first();
+    $category    = $transaction->category;
+    $amount      = $transaction->amount;
+
+    switch ($category) {
+      case 'withdraw':
+        $this->updateWithdrawBalance($amount, $walletBalance);
+        break;
+      case 'deposit':
+        $this->updateDepositBalance($amount, $walletBalance);
+        break;
+      default:
+        break;
+    }
+
   }
 
-  public function updateDepositProcess(){
+  public function updateWithdrawBalance($amount, $walletBalance){
+    $user = UserBalance::find(1);
+    $user->balance -= $amount;
+    $user->balance_wallet = $walletBalance;
+    $user->save();
   }
+
+  public function updateDepositBalance($amount, $walletBalance){
+    $user = UserBalance::find(1);
+    $user->balance += $amount;
+    $user->balance_wallet = $walletBalance;
+    $user->save();
+  }
+
 
 
 
