@@ -34,4 +34,12 @@ class PaymentService
       'timestamp' => $timestamp
     ]);
   }
+
+  public function paymentDeposit($orderId, $amount, $timestamp){
+    return $this->paymentRequest('/deposit','POST', [
+      'order_id' => $orderId,
+      'amount'   => $amount,
+      'timestamp' => $timestamp
+    ]);
+  }
 }

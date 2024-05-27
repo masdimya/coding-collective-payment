@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\BroadCastTransaction;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 
 class UserController extends Controller
@@ -19,7 +20,7 @@ class UserController extends Controller
         $status  = $request->status;
         $orderId = $request->order_id;
         $walletBalance = $request->balance;
-
+        Log::info('status & walletBalance: {id} {wallet}', ['id' => $orderId, 'wallet' => $walletBalance]);
         $this->userService->updateTransaction($orderId, $status);
         $this->userService->updateBalance($orderId, $walletBalance);
 

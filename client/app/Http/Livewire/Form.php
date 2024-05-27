@@ -53,11 +53,13 @@ class Form extends Component
         $orderId   = $this->userService->generateDepositOrderId();
         $timestamp = now()->format('Y-m-d H:i:s');
 
+        $this->paymentService->paymentDeposit($orderId, $amount, $timestamp);
         $this->userService->createDepositProcess(
             $user->id,
             $orderId,
             $amount
         );
+        $this->amount = 0;
         $this->emit('updateTransaction');
 
     }

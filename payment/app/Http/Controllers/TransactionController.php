@@ -41,8 +41,9 @@ class TransactionController extends Controller
             $customer = $request->attributes->get('customer');
             $amount   = $request->amount;
             $orderId  = $request->order_id;
-
-            ProcessDeposit::dispatch($customer->id, $amount, $orderId );
+            $timestamp  = $request->timestamp;
+            
+            ProcessDeposit::dispatch($customer->id, $amount, $orderId, $timestamp );
 
             return response()->json([
                 'order_id' => $orderId,
