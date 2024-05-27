@@ -45,6 +45,17 @@ class Form extends Component
     }
 
     public function depositAction(){
-        
+        $user      = $this->userService->getUserInfo();
+        $amount    = $this->amount;
+        $orderId   = $this->userService->generateDepositOrderId();
+        $timestamp = now()->format('Y-m-d H:i:s');
+
+        $this->userService->createDepositProcess(
+            $user->id,
+            $orderId,
+            $amount
+        );
+        $this->emit('updateTransaction');
+
     }
 }

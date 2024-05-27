@@ -18,7 +18,7 @@ class UserServices
   }
 
   public function getTransactions(){
-    return UserTransaction::all();
+    return UserTransaction::orderBy('id','desc')->get();
   }
 
   protected function generateOrderId($type){
@@ -62,8 +62,8 @@ class UserServices
     $this->createTransaction($userId, $orderId, $amount, 'withdraw');
   }
 
-  public function createDepositProcess(){
-    // $this->createTransaction();
+  public function createDepositProcess($userId, $orderId, $amount){
+    $this->createTransaction($userId, $orderId, $amount, 'deposit');
   }
 
   public function updateWithdrawProcess(){
@@ -71,7 +71,6 @@ class UserServices
   }
 
   public function updateDepositProcess(){
-    $this->updateTransaction();
   }
 
 
