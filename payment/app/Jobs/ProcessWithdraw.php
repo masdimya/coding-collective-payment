@@ -18,6 +18,7 @@ class ProcessWithdraw implements ShouldQueue
     protected $customerId;
     protected $amount;
     protected $orderId;
+    protected $timestamp;
     public $tries = 1;
 
 
@@ -26,12 +27,14 @@ class ProcessWithdraw implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($customerId, $amount, $orderId)
+    public function __construct($customerId, $amount, $orderId, $timestamp)
     {
         $this->paymentService = new PaymentTransactionService();
         $this->customerId = $customerId;
         $this->amount     = $amount;
         $this->orderId    = $orderId;
+        $this->timestamp    = $timestamp;
+
     }
 
     /**
@@ -47,12 +50,14 @@ class ProcessWithdraw implements ShouldQueue
                 $this->customerId,
                 $this->amount,
                 $this->orderId,
+                $this->timestamp
             );
         } catch (\Throwable $th) {
             $this->paymentService->withdrawTranscationFailed(
                 $this->customerId,
                 $this->amount,
                 $this->orderId,
+                $this->timestamp
             );
 
             throw $th;

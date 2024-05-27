@@ -1,5 +1,5 @@
 <?php
-namespace App\Service;
+namespace App\Services;
 use GuzzleHttp\Client;
 
 class PaymentService 
@@ -9,7 +9,7 @@ class PaymentService
 
   public function __construct() {
     $this->token = base64_encode(env('PAYMENT_PLAINTEXT_TOKEN'));
-    $this->url   = env('PAYMENT_HOST');
+    $this->url   = env('PAYMENT_HOST').'/payments';
   }
 
   protected function paymentRequest($path, $method, $body ){
@@ -27,9 +27,11 @@ class PaymentService
 
   }
 
-  public function paymentWithdraw($orderId, $amount){
+  public function paymentWithdraw($orderId, $amount, $timestamp){
     return $this->paymentRequest('/withdraw','POST', [
-      $orderId, $amount
+      'order_id' => $orderId,
+      'amount'   => $amount,
+      'timestamp' => $timestamp
     ]);
   }
 }

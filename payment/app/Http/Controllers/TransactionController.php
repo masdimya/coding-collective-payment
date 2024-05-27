@@ -19,8 +19,10 @@ class TransactionController extends Controller
             $customer = $request->attributes->get('customer');
             $amount   = $request->amount;
             $orderId  = $request->order_id;
+            $timestamp  = $request->timestamp;
 
-            ProcessWithdraw::dispatch($customer->id, $amount, $orderId );
+
+            ProcessWithdraw::dispatch($customer->id, $amount, $orderId, $timestamp );
 
             return response()->json([
                 'order_id' => $orderId,

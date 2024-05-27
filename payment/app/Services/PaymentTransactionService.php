@@ -8,7 +8,7 @@ use App\Models\PaymentTransactionModel;
 
 class PaymentTransactionService
 {
-  public function createTransaction($custId, $amount, $category, $orderId, $status='success')
+  public function createTransaction($custId, $amount, $category, $orderId,  $transactionDate, $status='success')
   {
     PaymentTransactionModel::create([
       'cust_id'  => $custId,
@@ -16,27 +16,28 @@ class PaymentTransactionService
       'category' => $category,
       'order_id' => $orderId,
       'status'   => $status,
+      'transaction_date' => $transactionDate
     ]);
   }
 
-  public function withdrawTranscationSuccess($custId, $amount, $orderId)
+  public function withdrawTranscationSuccess($custId, $amount, $orderId,  $transactionDate)
   {
-    $this->createTransaction($custId, $amount, 'withdraw', $orderId);
+    $this->createTransaction($custId, $amount, 'withdraw', $orderId,  $transactionDate);
   }
 
-  public function withdrawTranscationFailed($custId, $amount, $orderId)
+  public function withdrawTranscationFailed($custId, $amount, $orderId,  $transactionDate)
   {
-    $this->createTransaction($custId, $amount, 'withdraw', $orderId, 'failed');
+    $this->createTransaction($custId, $amount, 'withdraw', $orderId, $transactionDate, 'failed');
   }
 
-  public function depositTranscationSuccess($custId, $amount, $orderId)
+  public function depositTranscationSuccess($custId, $amount, $orderId,  $transactionDate)
   {
-    $this->createTransaction($custId, $amount, 'deposit', $orderId);
+    $this->createTransaction($custId, $amount, 'deposit', $orderId,  $transactionDate);
   }
 
-  public function depositTranscationFailed($custId, $amount, $orderId)
+  public function depositTranscationFailed($custId, $amount, $orderId,  $transactionDate)
   {
-    $this->createTransaction($custId, $amount, 'deposit', $orderId, 'failed');
+    $this->createTransaction($custId, $amount, 'deposit', $orderId, $transactionDate, 'failed');
   }
 
   public function withdraw($custId, $amount)
