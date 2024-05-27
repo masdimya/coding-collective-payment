@@ -19,7 +19,7 @@ class DataSeeder extends Seeder
         DB::table('user_balance')->insert([
             'user_id' => 1,
             'balance' => 1000000,
-            'balance_wallet' => 0,
+            'balance_wallet' => 1000000,
 
         ]);
 
@@ -29,7 +29,7 @@ class DataSeeder extends Seeder
 
         DB::table('payment_balance')->insert([
             'cust_id' => 1,
-            'balance' => 0,
+            'balance' => 1000000,
         ]);
     }
 }

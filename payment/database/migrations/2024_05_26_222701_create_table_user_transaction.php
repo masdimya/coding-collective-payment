@@ -15,7 +15,7 @@ class CreateTableUserTransaction extends Migration
     {
         Schema::create('user_transaction', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->unique();
+            $table->unsignedBigInteger('user_id');
             $table->string('order_id');
             $table->decimal('amount',19,2);
             $table->enum('category',['deposit','withdraw']);
