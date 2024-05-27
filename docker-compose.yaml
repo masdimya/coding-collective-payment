@@ -1,0 +1,53 @@
+volumes:
+  db-store:
+networks:
+  laravel:
+
+services:
+  app-client:
+    build:
+      context: .
+      dockerfile: ./infra/docker/php/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+      target: ${APP_BUILD_TARGET:-development}
+    ports:
+      - "8000:8000"
+    volumes:
+      - type: bind
+        source: ./client
+        target: /workspace
+    networks:
+      - laravel
+  app-payment:
+    build:
+      context: .
+      dockerfile: ./infra/docker/php/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+      target: ${APP_BUILD_TARGET:-development}
+    ports:
+        - "6001:6001"
+    volumes:
+      - type: bind
+        source: ./payment
+        target: /workspace
+    networks:
+      - laravel
+  db:
+    image: mariadb:10.6
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: phper
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel

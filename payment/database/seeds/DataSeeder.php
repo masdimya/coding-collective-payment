@@ -34,7 +34,7 @@ class DataSeeder extends Seeder
 
         DB::table('payment_webhook')->insert([
             'cust_id' => 1,
-            'url' => 'http://127.0.0.1:8000/api/hook-transaction',
+            'url' => 'http://app-client:8000/api/hook-transaction',
         ]);
     }
 }
