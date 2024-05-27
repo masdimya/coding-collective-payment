@@ -37,6 +37,9 @@ class Form extends Component
                 $amount
             );
             $this->emit('updateTransaction');
+            
+            $this->amount = 0;
+
 
         } catch (\Throwable $th) {
             throw $th;

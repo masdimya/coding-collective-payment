@@ -1,1 +1,3 @@
-<div wire:poll.5s></div>
+<div wire:poll.3s></div>
+{{-- <div></div> --}}
+

@@ -17,7 +17,7 @@ class UserController extends Controller
     public function hookTransaction(Request $request){
 
         $status  = $request->status;
-        $orderId = $request->orderId;
+        $orderId = $request->order_id;
         $walletBalance = $request->balance;
 
         $this->userService->updateTransaction($orderId, $status);

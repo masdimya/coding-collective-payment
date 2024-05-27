@@ -5,9 +5,17 @@ namespace App\Services;
 use App\Exceptions\PaymentJobsException;
 use App\Models\PaymentBalanceModel;
 use App\Models\PaymentTransactionModel;
+use App\Services\PaymentWebHookService;
+
 
 class PaymentTransactionService
 {
+  protected $webHookService;
+
+  public function __construct(){
+    $this->webHookService = new PaymentWebHookService();
+  }
+  
   public function createTransaction($custId, $amount, $category, $orderId,  $transactionDate, $status='success')
   {
     PaymentTransactionModel::create([
@@ -58,8 +66,24 @@ class PaymentTransactionService
     $balance->save();
   }
 
-  public function notify(){
-    return 'notify';
+  public function notifySuccess($custId,$orderId){
+    $balance = PaymentBalanceModel::where('cust_id', $custId )->first();
+    $body    = [
+      'order_id' => $orderId,
+      'balance'  => $balance->balance,
+      'status'   => 'success'
+    ];
+    $this->webHookService->transactionSendResult($custId, $body);
+  }
+
+  public function notifyFailed($custId,$orderId){
+    $balance = PaymentBalanceModel::where('cust_id', $custId )->first();
+    $body    = [
+      'order_id' => $orderId,
+      'balance'  => $balance->balance,
+      'status'   => 'failed'
+    ];
+    $this->webHookService->transactionSendResult($custId, $body);
   }
 
 }

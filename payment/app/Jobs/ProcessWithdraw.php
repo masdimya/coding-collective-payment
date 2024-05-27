@@ -52,6 +52,7 @@ class ProcessWithdraw implements ShouldQueue
                 $this->orderId,
                 $this->timestamp
             );
+            $this->paymentService->notifySuccess($this->customerId, $this->orderId);
         } catch (\Throwable $th) {
             $this->paymentService->withdrawTranscationFailed(
                 $this->customerId,
@@ -59,6 +60,7 @@ class ProcessWithdraw implements ShouldQueue
                 $this->orderId,
                 $this->timestamp
             );
+            $this->paymentService->notifyFailed($this->customerId, $this->orderId);
 
             throw $th;
         }

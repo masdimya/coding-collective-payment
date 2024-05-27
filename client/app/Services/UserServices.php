@@ -49,7 +49,7 @@ class UserServices
 
   public function updateTransaction($orderId, $status){
     $transaction = UserTransaction::where('order_id',$orderId)->first();
-
+    
     switch ($status) {
       case 'success':
         $transaction->status = 'success';
@@ -73,32 +73,34 @@ class UserServices
 
   public function updateBalance($orderId, $walletBalance){
     $transaction = UserTransaction::where('order_id',$orderId)->first();
-    $category    = $transaction->category;
-    $amount      = $transaction->amount;
-
-    switch ($category) {
-      case 'withdraw':
-        $this->updateWithdrawBalance($amount, $walletBalance);
-        break;
-      case 'deposit':
-        $this->updateDepositBalance($amount, $walletBalance);
-        break;
-      default:
-        break;
+    if($transaction->status == 'success') {
+      $category    = $transaction->category;
+      $amount      = $transaction->amount;
+  
+      switch ($category) {
+        case 'withdraw':
+          $this->updateWithdrawBalance($amount, $walletBalance);
+          break;
+        case 'deposit':
+          $this->updateDepositBalance($amount, $walletBalance);
+          break;
+        default:
+          break;
+      }
     }
 
   }
 
   public function updateWithdrawBalance($amount, $walletBalance){
     $user = UserBalance::find(1);
-    $user->balance -= $amount;
+    $user->balance += $amount;
     $user->balance_wallet = $walletBalance;
     $user->save();
   }
 
   public function updateDepositBalance($amount, $walletBalance){
     $user = UserBalance::find(1);
-    $user->balance += $amount;
+    $user->balance -= $amount;
     $user->balance_wallet = $walletBalance;
     $user->save();
   }
